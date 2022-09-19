@@ -85,6 +85,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.assetbundlebrowser.plus": {
+      "version": "https://github.com/michael811125/AssetBundles-Browser-Plus.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "38e6e2f61783cbdc3105d68dddaac884031e4e85"
+    },
     "com.unity.burst": {
       "version": "1.6.5",
       "depth": 3,
