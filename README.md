@@ -23,5 +23,9 @@ An editor tool that allows you transfer Animation Clip into Animator States with
 **ClipStatePairs(List)** : AnimTransferer will try finding clips in **SourceAnimationClips** in **AnimAssets** with **SourceClipName**, and then, Find matched state name in the **TargetAnimatorController** in **AnimAssets** with **TargetStateName**,finally, replace matched state's motion's clip with matched clip.  
 **AnimAssets(List)** : Drag and drop your **SourceAnimationClips** and **TargetAnimatorController** that you want to transfer here.
 
+## Installation
+### Install via git URL  
+Add https://github.com/JohnsonChenz/AnimTransferer.git?path=Assets/Plugins/AnimTransferer to Package Manager.
+
 ## License
 This library is under the MIT License.
