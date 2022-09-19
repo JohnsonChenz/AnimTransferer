@@ -1,0 +1,18 @@
+{
+    "name": "AnimTransferer.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:58641f123b2ba2f449c98e79856f2173"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
