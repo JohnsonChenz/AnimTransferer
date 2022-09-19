@@ -15,12 +15,14 @@ An editor tool that allows you transfer Animation Clip into Animator States with
 5. **(Optional)** Click button **Export Json File** to export json data somewhere you like. 
 
 ## Simple explanation of AnimTransferGroup :
-**GroupName** : Define you group name, when group name isn't empty, the exported json will use it as one part of file name.  
-**ExportAnimAssetData** : When enable, exported json will include anim asset's file path & guid as path info. Allow editor load asset back from these path when loading json data.  
-**FindSimilarStateName** : When enable, AnimTransferer will find states in the target controller with similar name compared to the Clip-State-Pair and transfer motion into it.  
-**Similarity(Show up when Find Similar State Name is enable)** : When the similarity between the name of State in the animator controller  and Clip-State-Pair is greater than the set Similarity value, the editor will treat it as a replaceable State.  
-**ReplaceMatchedStateNameWithConfig(Show up when Find Similar State Name is enable)** : When enable, AnimTransferer will also replace matched state name from config.  
-**ClipStatePairs(List)** : AnimTransferer will try finding clips in **SourceAnimationClips** in **AnimAssets** with **SourceClipName**,and then, find matched state name in the **TargetAnimatorController** in **AnimAssets** with **TargetStateName**,finally,replace matched state's motion's clip with matched clip.  
+**GroupName(string)** : Define you group name, when group name isn't empty, the exported json will use it as one part of file name.  
+**ExportAnimAssetData(bool)*** : When enable, exported json will include anim asset's file path & guid as path info. Allow editor load asset back from these path when loading json data.  
+**FindSimilarClipName(bool)** : When enable, Clip that in source animations with similar name compared to the config of Clip-State-Pairs will also seen as transferable Clip.
+**PreferedSimilarityOfClipName(float)(Show up when Find Find Similar Clip Name is enable)** : When the similarity between the name of Clip and any Source Clip Name in Clip-State-Pairs is greater or equal to the set value, the editor will treat it as a transferable Clip.
+**FindSimilarStateName(bool)** : When enable, State that in the target controller with similar name compared to the config of Clip-State-Pairs will also seen as transferable State. 
+**PreferedSimilarityOfStateName(float)(Show up when Find Similar State Name is enable)** : When the similarity between the name of State and any Target Animator Controller Name in Clip-State-Pairs is greater or equal to the set value, the editor will treat it as a transferable State.  
+**ReplaceMatchedStateNameWithConfig(bool)(Show up when Find Similar State Name is enable)** : When enable, matched State's name will replace with most similar name found in the config of Clip-State-Pairs.  
+**ClipStatePairs(List)** : AnimTransferer will try finding clips in SourceAnimationClips in AnimAssets with SourceClipName,and then, find matched state name in the TargetAnimatorController in AnimAssets with TargetStateName,finally,replace matched state's motion's clip with matched clip.  
 **AnimAssets(List)** : Drag and drop your **SourceAnimationClips** and **TargetAnimatorController** that you want to transfer here.
 
 ## Installation

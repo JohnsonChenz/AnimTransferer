@@ -25,18 +25,18 @@ namespace AnimTransferer.Runtime
                     Debug.Log($"<color=#F38674>>>>>>>>>>>>>>>>>>>>> 轉換目標AnimatorController名稱 : {animAsset.targetAnimatorController.name}<<<<<<<<<<<<<<<<<<<<</color>");
 
                     // 1.從Controller內取得符合設定檔名稱的State
-                    List<AnimatorState> listValidAnimationState = this._GetVaildAnimationStates(dictStateAnimationPair.Keys, animAsset.targetAnimatorController, animTransferGroup.findSimilarStateName, animTransferGroup.similarity, animTransferGroup.replaceMatchedStateNameWithConfig);
+                    List<AnimatorState> listValidAnimationState = this._GetVaildAnimationStates(dictStateAnimationPair.Keys, animAsset.targetAnimatorController, animTransferGroup.findSimilarStateName, animTransferGroup.preferedSimilarityOfStateName, animTransferGroup.replaceMatchedStateNameWithConfig);
 
                     Debug.Log($"<color=#F5AB00>有效的State數量為 : {listValidAnimationState.Count}</color>");
 
                     foreach (var animationState in listValidAnimationState)
                     {
-                        // 1-1.以設定檔的ClipName去Animation Clips資料中查找名稱最近似的Clip
+                        // 1-1.以State名稱去創建的Map快取查找對應的SourceClipName
                         string name = dictStateAnimationPair[animationState.name];
                         Debug.Log($"<color=#F5AB00>取得之Clip名稱為 : {name}</color>");
 
-                        // 1-2 以名稱查找出名稱最相似的AnimationClip
-                        AnimationClip animationClip = this._GetAnimationClipBySimilarName(animAsset.sourceAnimationClips, name);
+                        // 1-2 以SourceClipName去SourceAnimationClip中查找出名稱最相似的AnimationClip
+                        AnimationClip animationClip = this._GetValidAnimationClip(animAsset.sourceAnimationClips, name, animTransferGroup.findSimilarClipName, animTransferGroup.preferedSimilarityOfClipName);
 
                         // 1-3.指定給該Motion
                         if (animationClip != null)
@@ -65,7 +65,7 @@ namespace AnimTransferer.Runtime
                 {
                     if (findSimilarStateName)
                     {
-                        Debug.Log($"<color=#00D61B>>>>>>以相似度演算法查找AnimatorControllr內之State : {state.state.name}是否和Config設置之State名稱相似度 > {similarity}<<<<<</color>");
+                        Debug.Log($"<color=#00D61B>>>>>>以相似度演算法查找Config是否有和 {state.state.name} 名稱相似度 > {similarity}的State Name<<<<<</color>");
 
                         Dictionary<decimal, string> samples = new Dictionary<decimal, string>();
 
@@ -83,11 +83,11 @@ namespace AnimTransferer.Runtime
                             decimal max = samples.Keys.Max();
                             if (max < (decimal)similarity)
                             {
-                                Debug.Log($"<color=#00D61B>以名稱 {state.state.name} 查無相似Config設置之AnimationState，最大相似值 : {max}</color>");
+                                Debug.Log($"<color=#00D61B>以名稱 {state.state.name} 查無相似Config設置之AnimationState，最大相似度 : {max}</color>");
                                 continue;
                             }
                             string mostSimilarStateName = samples[max];
-                            Debug.Log($"<color=#FF9000>以名稱 {state.state.name} 查找到最相似的Config設置之AnimationState名稱為 : {mostSimilarStateName}，最大相似值 : {max}</color>");
+                            Debug.Log($"<color=#FF9000>以名稱 {state.state.name} 查找到最相似的Config設置之AnimationState名稱為 : {mostSimilarStateName}，相似度 : {max}</color>");
 
                             if (replaceFoundStateNameWithConfigs)
                             {
@@ -100,10 +100,14 @@ namespace AnimTransferer.Runtime
                     }
                     else
                     {
+                        Debug.Log($"<color=#00D61B>>>>>>查找Config是否有和 {state.state.name} 相同名稱的State Name<<<<<</color>");
+
                         if (stateNames.Contains(state.state.name))
                         {
                             listValidAnimationState.Add(state.state);
                         }
+
+                        Debug.Log($"<color=#00D61B>>>>>>並無查找到Config內有和 {state.state.name} 相同名稱的State Name<<<<<</color>");
                     }
                 }
             }
@@ -111,30 +115,50 @@ namespace AnimTransferer.Runtime
             return listValidAnimationState;
         }
 
-        private AnimationClip _GetAnimationClipBySimilarName(List<AnimationClip> listAnimationClips, string name)
+        private AnimationClip _GetValidAnimationClip(List<AnimationClip> listAnimationClips, string name, bool findSimilarClipName, float similarity)
         {
-            Dictionary<decimal, AnimationClip> samples = new Dictionary<decimal, AnimationClip>();
-
-            foreach (var animationClip in listAnimationClips)
+            // 以相似度演算法從SourcesAnimationClips內查找有效的Clip
+            if (findSimilarClipName)
             {
-                decimal percentage = LevenshteinDistance.LevenshteinDistanceDecimal(animationClip.name, name);
-                if (!samples.ContainsKey(percentage))
+                Debug.Log($"<color=#00D61B>>>>>>以相似度演算法查找SourceAnimation內是否有和設定檔之Clip Name : {name} 名稱相似度 > {similarity}的動畫<<<<<</color>");
+
+                Dictionary<decimal, AnimationClip> samples = new Dictionary<decimal, AnimationClip>();
+
+                foreach (var animationClip in listAnimationClips)
                 {
-                    samples.Add(percentage, animationClip);
+                    decimal percentage = LevenshteinDistance.LevenshteinDistanceDecimal(animationClip.name, name);
+                    if (!samples.ContainsKey(percentage))
+                    {
+                        samples.Add(percentage, animationClip);
+                    }
+                }
+
+                if (samples.Count > 0)
+                {
+                    decimal max = samples.Keys.Max();
+                    if (max < (decimal)similarity)
+                    {
+                        Debug.Log($"<color=#F5AB00>以名稱 {name} 查無相似之AnimationClip，最大相似度 : {max}</color>");
+                        return null;
+                    }
+                    AnimationClip clip = samples[max];
+                    Debug.Log($"<color=#F5AB00>以名稱 {name} 查找到最相似的AnimationClip名稱為 : {clip.name}，相似度 : {max}</color>");
+                    return clip;
                 }
             }
-
-            if (samples.Count > 0)
+            else
             {
-                decimal max = samples.Keys.Max();
-                if (max < 0.2m)
+                Debug.Log($"<color=#00D61B>>>>>>查找SourceAnimation內是否有和設定檔之Clip Name : {name} 名稱相同的動畫<<<<<</color>");
+
+                foreach (var clip in listAnimationClips)
                 {
-                    Debug.Log($"<color=#F5AB00>以名稱 {name} 查無相似之AnimationClip，最大相似度 : {max}</color>");
-                    return null;
+                    if (clip.name == name)
+                    {
+                        return clip;
+                    }
                 }
-                AnimationClip clip = samples[max];
-                Debug.Log($"<color=#F5AB00>以名稱 {name} 查找到最相似的AnimationClip名稱為 : {clip.name}</color>");
-                return clip;
+
+                Debug.Log($"<color=#00D61B>>>>>>並無查找到SourceAnimation內有和設定檔之Clip Name : {name} 名稱相同的動畫<<<<<</color>");
             }
 
             return null;
