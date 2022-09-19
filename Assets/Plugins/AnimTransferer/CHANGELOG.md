@@ -1,5 +1,8 @@
 ## CHANGELOG
 
+### v1.1.1
+- Bug Fixes : Wrongly log print in TransferPorcessor.
+
 ### v1.1.0
 #### Modification of AnimTransferGroup :
 1. Modified variable name and tooltip.

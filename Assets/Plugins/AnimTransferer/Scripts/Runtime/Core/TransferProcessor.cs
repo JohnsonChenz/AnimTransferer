@@ -105,6 +105,8 @@ namespace AnimTransferer.Runtime
                         if (stateNames.Contains(state.state.name))
                         {
                             listValidAnimationState.Add(state.state);
+                            Debug.Log($"<color=#00D61B>>>>>>查找成功 : 相符之State Name : {state.state.name}<<<<<</color>");
+                            continue;
                         }
 
                         Debug.Log($"<color=#00D61B>>>>>>並無查找到Config內有和 {state.state.name} 相同名稱的State Name<<<<<</color>");
@@ -154,6 +156,7 @@ namespace AnimTransferer.Runtime
                 {
                     if (clip.name == name)
                     {
+                        Debug.Log($"<color=#00D61B>>>>>>查找成功 : 相符之Clip Name : {clip.name}<<<<<</color>");
                         return clip;
                     }
                 }
