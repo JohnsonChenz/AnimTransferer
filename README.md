@@ -18,7 +18,7 @@ An editor tool that allows you transfer Animation Clip into Animator States with
 **GroupName** : Define you group name, when group name isn't empty, the exported json will use it as one part of file name.  
 **ExportAnimAssetData** : When enable, exported json will include anim asset's file path & guid as path info. Allow editor load asset back from these path when loading json data.  
 **FindSimilarStateName** : When enable, AnimTransferer will find states in the target controller with similar name compared to the Clip-State-Pair and transfer motion into it.  
-**Similarity(Show up when Find Similar State Name is enable)** : When the similarity between the name of State in the animation controller and Clip-State-Pair is greater than the set Similarity value, the editor will treat it as a replaceable State.  
+**Similarity(Show up when Find Similar State Name is enable)** : When the similarity between the name of State in the animator controller  and Clip-State-Pair is greater than the set Similarity value, the editor will treat it as a replaceable State.  
 **ReplaceMatchedStateNameWithConfig** : When enable, AnimTransferer will also replace matched state name from config.  
 **ClipStatePairs(List)** : AnimTransferer will try finding clips in **SourceAnimationClips** in **AnimAssets** with **SourceClipName**,and then, find matched state name in the **TargetAnimatorController** in **AnimAssets** with **TargetStateName**,finally,replace matched state's motion's clip with matched clip.  
 **AnimAssets(List)** : Drag and drop your **SourceAnimationClips** and **TargetAnimatorController** that you want to transfer here.
