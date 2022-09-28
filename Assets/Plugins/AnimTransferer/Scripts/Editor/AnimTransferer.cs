@@ -249,8 +249,11 @@ namespace AnimTransferer.Editor
                 {
                     if (GUILayout.Button("Transfer", GUILayout.Height(40)))
                     {
+                        if (this._listAnimTransferGroup.Count == 0) return;
+
                         TransferProcessor transferProcessor = new TransferProcessor();
                         transferProcessor.StartTransfer(this._listAnimTransferGroup);
+                        EditorUtility.DisplayDialog("Transfer Complete", "Transfer Completed", "OK");
                     }
                 },
                 Color.green
@@ -262,6 +265,8 @@ namespace AnimTransferer.Editor
         {
             if (!string.IsNullOrEmpty(path))
             {
+                if (this._listAnimTransferGroup.Count == 0) return;
+
                 foreach (var animTransferData in this._listAnimTransferGroup)
                 {
                     if (animTransferData.exportAnimAssetData)
@@ -286,6 +291,8 @@ namespace AnimTransferer.Editor
 
                     Debug.Log($"<color=#02E300>Json配置檔輸出成功!! 路徑: {fullPath} </color>");
                 }
+
+                EditorUtility.DisplayDialog("Export Complete", "Export Completed", "OK");
             }
         }
 

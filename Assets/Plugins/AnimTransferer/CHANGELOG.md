@@ -1,5 +1,8 @@
 ## CHANGELOG
 
+### v1.1.2
+- Added : Editor will now display dialog after Transfer & Export Config
+
 ### v1.1.1
 - Bug Fixes : Wrongly log print in TransferPorcessor.
 
