@@ -79,7 +79,10 @@ namespace AnimTransferer.Editor
         {
             if (this._autoScanJson)
             {
-                this._LoadFolder(this._jsonFileFolderPath);
+                if(!string.IsNullOrEmpty(this._jsonFileFolderPath))
+                {
+                    this._LoadFolder(this._jsonFileFolderPath);
+                }
             }
         }
 
@@ -132,7 +135,12 @@ namespace AnimTransferer.Editor
                         if (GUILayout.Button("Browse Json To Load", GUILayout.Width(140)))
                         {
                             string path = EditorUtility.OpenFilePanel("Browse Json To Load", this._jsonFileFolderPath, null);
-                            this._LoadFile(path);
+
+                            if (!string.IsNullOrEmpty(path))
+                            {
+                                this._listAnimTransferGroup.Clear();
+                                this._LoadFile(path);
+                            }
                         }
                     },
                     "#70FFFF"
@@ -179,6 +187,11 @@ namespace AnimTransferer.Editor
                     {
                         if (GUILayout.Button("Reset", GUILayout.Width(60)))
                         {
+                            if (!EditorUtility.DisplayDialog("Reset", "This action will clear all Anim Transfer Group data. Are you sure you want to do that ?", "Yes", "No"))
+                            {
+                                return;
+                            }
+
                             this._listAnimTransferGroup.Clear();
                         }
                     },
@@ -307,64 +320,37 @@ namespace AnimTransferer.Editor
             {
                 string filePath = fileInfo.FullName;
 
-                if (!string.IsNullOrEmpty(filePath))
+                if(!string.IsNullOrEmpty(filePath))
                 {
-                    string json = File.ReadAllText(filePath);
-
-                    if (!string.IsNullOrEmpty(json))
-                    {
-                        AnimTransferGroup animationTransferGroup = JsonConvert.DeserializeObject<AnimTransferGroup>(json);
-                        if (animationTransferGroup == null) continue;
-
-                        Debug.Log($"<color=#02E300>Json配置檔載入成功!! 路徑: {filePath} </color>");
-
-                        bool hasPathModified = false;
-
-                        foreach (var animAsset in animationTransferGroup.animAssets)
-                        {
-                            Debug.Log($"<color=#F38674>>>>>>>>>>>>>>>>>>>>> 加載 Anim Assets : {animationTransferGroup.animAssets.IndexOf(animAsset)} <<<<<<<<<<<<<<<<<<<<</color>");
-                            hasPathModified = animAsset.AssignAssetsByFileInfos();
-                        }
-
-                        if (hasPathModified)
-                        {
-                            EditorUtility.DisplayDialog("提示", "載入的過程中偵測到AnimatorController or AnimationClip路徑的更動，請考慮進行存檔動作", "OK");
-                        }
-                        this._listAnimTransferGroup.Add(animationTransferGroup);
-                    }
+                    this._LoadFile(filePath);
                 }
             }
         }
 
         private void _LoadFile(string filePath)
         {
-            if (!string.IsNullOrEmpty(filePath))
+            string json = File.ReadAllText(filePath);
+
+            if (!string.IsNullOrEmpty(json))
             {
-                string json = File.ReadAllText(filePath);
+                AnimTransferGroup animationTransferGroup = JsonConvert.DeserializeObject<AnimTransferGroup>(json);
+                if (animationTransferGroup == null) return;
 
-                if (!string.IsNullOrEmpty(json))
+                Debug.Log($"<color=#02E300>Json配置檔載入成功!! 路徑: {filePath} </color>");
+
+                bool hasPathModified = false;
+
+                foreach (var animAsset in animationTransferGroup.animAssets)
                 {
-                    AnimTransferGroup animationTransferGroup = JsonConvert.DeserializeObject<AnimTransferGroup>(json);
-                    if (animationTransferGroup == null) return;
-
-                    this._listAnimTransferGroup.Clear();
-
-                    Debug.Log($"<color=#02E300>Json配置檔載入成功!! 路徑: {filePath} </color>");
-
-                    bool hasPathModified = false;
-
-                    foreach (var animAsset in animationTransferGroup.animAssets)
-                    {
-                        Debug.Log($"<color=#F38674>>>>>>>>>>>>>>>>>>>>> 加載 Anim Assets : {animationTransferGroup.animAssets.IndexOf(animAsset)} <<<<<<<<<<<<<<<<<<<<</color>");
-                        hasPathModified = animAsset.AssignAssetsByFileInfos();
-                    }
-
-                    if (hasPathModified)
-                    {
-                        EditorUtility.DisplayDialog("提示", "載入的過程中偵測到AnimatorController or AnimationClip路徑的更動，請考慮進行存檔動作", "OK");
-                    }
-                    this._listAnimTransferGroup.Add(animationTransferGroup);
+                    Debug.Log($"<color=#F38674>>>>>>>>>>>>>>>>>>>>> 加載 Anim Assets : {animationTransferGroup.animAssets.IndexOf(animAsset)} <<<<<<<<<<<<<<<<<<<<</color>");
+                    hasPathModified = animAsset.AssignAssetsByFileInfos();
                 }
+
+                if (hasPathModified)
+                {
+                    EditorUtility.DisplayDialog("Hint", $"Changes to the resource path are detected during the process of reading AnimatorController or AnimationClip through the configuration file: {filePath}, please consider re-export the Json Config file", "OK");
+                }
+                this._listAnimTransferGroup.Add(animationTransferGroup);
             }
         }
 

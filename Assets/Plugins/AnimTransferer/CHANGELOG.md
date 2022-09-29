@@ -1,10 +1,14 @@
 ## CHANGELOG
 
+### v1.1.4
+- Added : Editor will now display double check dialog window when clicking button "Reset".
+- Fixed : Hint dialog window doesn't display correctly when detected change of resources path while loading json config files.
+
 ### v1.1.3
 - Modified : Converted json data will no longer being formatted.
 
 ### v1.1.2
-- Added : Editor will now display dialog after Transfer & Export Config
+- Added : Editor will now display dialog window after Transfer & Export Config
 
 ### v1.1.1
 - Bug Fixes : Wrongly log print in TransferPorcessor.
