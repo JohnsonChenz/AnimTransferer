@@ -285,7 +285,7 @@ namespace AnimTransferer.Editor
                         }
                     }
 
-                    string json = JsonConvert.SerializeObject(animTransferData, Formatting.Indented);
+                    string json = JsonConvert.SerializeObject(animTransferData, Formatting.None);
                     string fullPath = $"{path}/AnimTransferGroup_{(string.IsNullOrEmpty(animTransferData.groupName) ? this._listAnimTransferGroup.IndexOf(animTransferData) + 1 : animTransferData.groupName)}.json";
                     File.WriteAllText(fullPath, json);
 

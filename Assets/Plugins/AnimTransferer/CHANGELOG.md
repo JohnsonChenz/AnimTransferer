@@ -1,5 +1,8 @@
 ## CHANGELOG
 
+### v1.1.3
+- Modified : Converted json data will no longer being formatted.
+
 ### v1.1.2
 - Added : Editor will now display dialog after Transfer & Export Config
 
